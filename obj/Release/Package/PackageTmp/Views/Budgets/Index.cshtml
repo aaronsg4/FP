@@ -1,0 +1,192 @@
+﻿@model IEnumerable<FP.Models.Budget>
+@using Microsoft.AspNet.Identity 
+@{
+    ViewBag.Title = "Index";
+}
+@{ var userid = User.Identity.GetUserId();
+
+}
+
+<h2>Index</h2>
+
+<p>
+
+    @if (Request.IsAuthenticated)
+    {
+        <a href="@Url.Action("BudgetsCreateModal","Budgets", new { id = userid })" data-toggle="modal" data-target="#myModal1">Create a New Budget</a>
+    }
+    @*else
+    {
+        <a href="@Url.Action("Login", "Account")">Login</a>
+       <a href="@Url.Action("Register", "Account")">Register</a>
+    }*@
+
+  @*<div data-toggle="modal" data-target="#myModal2"></div>*@
+
+    @Html.ActionLink("Create New", "Create")
+
+</p>
+<p>
+    @Html.ActionLink("Create New Sub-Budget", "Create", "BudgetItems")
+</p>
+<p>
+    
+    @if (Model.Count() != 0)
+    {
+        @Model.First().Description
+    }
+
+</p>
+<br /><br /><br />
+<table class="table">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.SuggestedAmount)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.BudgetStartDate)
+        </th>
+
+
+        <th>
+           Budget Duration Period
+        </th>
+
+        <th></th>
+    </tr>
+
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.Name) <br />
+                    @foreach (var subbudget in Model)
+                    {
+                        foreach (var subbudgets in subbudget.BudgetItems)
+                        {
+                            if (subbudgets.BudgetId == subbudget.Id)
+                            {
+                                @Html.DisplayFor(modelItem => subbudgets.Name)
+                            }
+
+                        }
+
+                    }
+
+
+                </td>*@
+
+            @*<td class="select">Something (Repeated)</td>*@
+            @*<td align="center">
+                    <select>
+                        <option value="value1">Value1</option>
+                        <option value="value2">Value2</option>
+                        <option value="value3">Value3</option>
+                        <option value="value4">Value4</option>
+                    </select>
+                </td>*@
+
+
+
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SuggestedAmount)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.BudgetStartDate)
+            </td>
+            <td>
+                
+                @Html.DisplayFor(modelItem => item.BudgetDurationPeriod.NumberOfDays) Days  @*(@Html.DisplayFor(modelItem => item.BudgetStartDate)) -- @item.BudgetStartDate.AddDays(item.BudgetDurationPeriod.NumberOfDays))*@
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+<br /><br /><hr />
+
+<div class="page-head">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Budget Portal</h2>
+                <h4>Click image below to view your budget details</h4><br />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Heading ends -->
+<!-- Page content starts -->
+
+<div class="content about-two">
+    <div class="container">
+        <div class="row">
+
+            @foreach (var budget in Model)
+            {
+                <div class="col-md-3 col-sm-6  well">
+                    <!-- Staff #1 -->
+                    <div class="staff">
+                        <!-- Picture -->
+                        <a href="@Url.Action("Details", "Budgets", new { id = budget.Id })">
+                            <div class="pic">
+                                <img src="~/img/horizontal-1714232.png" alt="" class="img-responsive" />
+                            </div>
+                        </a>
+                        <!-- Details -->
+                        <div class="details">
+                            <!-- Name and designation -->
+                            <div class="desig pull-left">
+                                <p class="name">@budget.Name</p>
+                                <em>subtitle</em>
+                            </div>
+                            <!-- Social media details. Replace # with profile links -->
+                            <div class="asocial pull-right">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-linkedin"></i></a>
+                            </div>
+                            <div class="clearfix"></div>
+                            <!-- Description -->
+                            <p class="adesc">@budget.Description </p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+
+
+        </div>
+    </div>
+</div>
+<br /><br /><br /><br /><hr />
+@*<div class="container-fluid"*@
+
+@*</div>*@

@@ -1,0 +1,423 @@
+﻿@model FP.Models.Budget
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Details";
+}
+
+
+
+
+
+@{
+    var userId = User.Identity.GetUserId();
+    string start = Model.BudgetStartDate.ToShortDateString();
+    DateTime startdate = DateTime.Parse(start);
+    DateTime expirydate = Model.BudgetEnd;
+    string enddate = expirydate.ToShortDateString();
+    DateTime now = DateTime.Now;
+
+    TimeSpan t = expirydate - now;
+
+    int daysremain = t.Days;
+}
+
+@Html.DisplayFor(model => model.Household.Name) -- @Html.DisplayFor(model => model.Name)<br />
+@Html.DisplayFor(model => Model.BudgetStartDate) -- @expirydate<br /><br />
+@daysremain  Days Remaining in Budget
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+<p>Remaining Budget</p><br /><br /><br /><br /><br />
+<div class="col-md-6 well" id="SecondChart" style="height:430px;margin-bottom:70px"></div><div class="col-md-6 well" id="ThirdChart" style="height:430px;margin-bottom:70px"></div><br /><br />
+
+
+<br /><br /><br /><br />
+
+
+<span style="font-size:15px">
+    Targeted Budget for @Model.Name :
+    @Model.Amount
+</span>
+
+
+<div class="pull-right">Budget Period: @Model.BudgetStartDate  -- @Model.BudgetEnd</div>
+<div class="matter">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="widget">
+                    <div class="widget-head">
+                        <div class="pull-left">Statement</div>
+                        <div class="widget-icons pull-right">
+                            <a href="#" class="wminimize"><i class="fa fa-chevron-up"></i></a>
+                            <a href="#" class="wclose"><i class="fa fa-times"></i></a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="widget-content">
+                        <div class="padd statement">
+
+                            <div class="row">
+
+
+                                @{ var expenses = Model.Amount - Model.BudgetRemaining;}
+                                @{ var originalbudget = Model.Amount;}
+                                @{ var expenseratio = expenses / originalbudget;}
+                            @{ var expenseratioconvert = expenseratio;}
+
+
+                                @if (expenseratio > 0.90M) 
+                                {
+                                    <div class="col-md-4">
+                                        <div class="well" style="background-color:#ff5d5e; color:white">
+                                            <h2 style="color:white">@expenses</h2>
+                                      
+
+                                            <p>
+                                                You have exceded 90% of your targeted budget<br />
+                                                Expenses
+                                                @DateTime.Now
+                                            </p>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-4">
+                                        <div class="well">
+                                            <h2>@expenses</h2>
+                                            <p>
+                                                Expenses<br />
+                                                @Model.BudgetStartDate -- @DateTime.Now
+                                            </p>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="col-md-4">
+                                    <div class="well">
+                                        <h2>@Model.BudgetRemaining</h2>
+                                        <p>
+                                            Budget remaining<br />
+                                        Through @Model.BudgetEnd</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="well">
+                                        <h2>@daysremain</h2>
+                                        <p>Days Remaining in Budget Period</p>
+                                        <br />
+                                    </div>
+                                </div>
+
+
+                                <div id="myModalx" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                @*<button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Modal Header</h4>*@
+                                            </div>
+                                            <div class="modal-body">
+                                                @*@{Html.RenderAction("TransactionModal", "Transactions", new { id = userId });}*@
+                                            </div>
+                                            <div class="modal-footer">
+                                                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div id="myModalEditCategories" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                @*<button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Modal Header</h4>*@
+                                            </div>
+                                            <div class="modal-body">
+                                                @*@{Html.RenderAction("TransactionModal", "Transactions", new { id = userId });}*@
+                                            </div>
+                                            <div class="modal-footer">
+                                                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+                                <div id="NewCategory" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                @*<button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Modal Header</h4>*@
+                                            </div>
+                                            <div class="modal-body">
+                                                @*@{Html.RenderAction("TransactionModal", "Transactions", new { id = userId });}*@
+                                            </div>
+                                            <div class="modal-footer">
+                                                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+                                <div id="Unvoid" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                @*<button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Modal Header</h4>*@
+                                            </div>
+                                            <div class="modal-body">
+                                                @*@{Html.RenderAction("TransactionModal", "Transactions", new { id = userId });}*@
+                                            </div>
+                                            <div class="modal-footer">
+                                                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+                                <div id="Void" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                @*<button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Modal Header</h4>*@
+                                            </div>
+                                            <div class="modal-body">
+                                                @*@{Html.RenderAction("TransactionModal", "Transactions", new { id = userId });}*@
+                                            </div>
+                                            <div class="modal-footer">
+                                                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div id="Delete" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                @*<button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Modal Header</h4>*@
+                                            </div>
+                                            <div class="modal-body">
+                                                @*@{Html.RenderAction("TransactionModal", "Transactions", new { id = userId });}*@
+                                            </div>
+                                            <div class="modal-footer">
+                                                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+                                
+
+                                <div class="row">
+
+                                    <div class="col-md-12">
+                                        <hr />
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-responsive table-bordered">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>Name</th>
+                                                        <th>Amount</th>
+                                                        <th>Reconciled Amount</th>
+                                                        <th>Transaction ID</th>
+
+                                                        <th>Transaction Date</th>
+                                                        <th>Category</th>
+                                                        <th>Reconcile</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var transaction in Model.Transactions)
+                                                    {
+
+
+                                                        if (transaction.Void == true)
+                                                        {
+                                                            <tr>
+
+
+                                                                <td><strike> @transaction.Title</strike> </td>
+                                                                <td><strike> @transaction.Amount </strike></td>
+                                                                <td><strike> @transaction.ReconciledAmount </strike> </td>
+                                                                <td> <strike>@transaction.Id </strike></td>
+
+                                                                <td><strike> @transaction.CreatedDate</strike> </td>
+
+                                                                @if (transaction.TransactionCategoryId != null)
+                                                                {
+                                                                    <td><strike><span></span></strike></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td><strike><span></span> </strike></td>
+                                                                }
+
+
+                                                                <td>
+                                                                    @if (transaction.Reconciled == true)
+                                                                    {
+                                                                        <strike>
+                                                                            Void
+                                                                        </strike>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <strike>
+
+                                                                            UnVoid
+                                                                        </strike>
+                                                                    }
+
+
+                                                                </td>
+                                                                <td>
+                                                                    <a href="@Url.Action("Unvoid","Transactions", new { id = transaction.Id } )" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#Unvoid">
+                                                                        UnVoid
+                                                                    </a>
+
+
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+
+                                                                
+                                                                <td> @transaction.Title </td>
+                                                                <td> @transaction.Amount </td>
+                                                                <td>@transaction.ReconciledAmount</td>
+                                                                <td> @transaction.Id </td>
+
+                                                                <td> @transaction.CreatedDate </td>
+
+                                                                @if (transaction.TransactionCategoryId != null)
+                                                                {
+                                                                    <td><a type="button" class="btn btn-success" style="color:white; width:150px; margin-bottom:7px" href="@Url.Action("Edit", "TransactionCategories", new { id = transaction.TransactionCategory.Id, transactionid = transaction.Id } )" data-toggle="modal" data-target="#myModalEditCategories"> @transaction.TransactionCategory.Name</a> </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td><a type="button" class="btn btn-success" style="color:white; width:150px; margin-bottom:7px" href="@Url.Action("NewCategory", "TransactionCategories", new { @*id = transaction.TransactionCategory.Id*@ transactionid = transaction.Id } )" data-toggle="modal" data-target="#NewCategory"> N/A </a> </td>
+                                                                }
+
+
+                                                                <td>
+                                                                    @if (transaction.Reconciled == true)
+                                                                    {
+                                                                        <span style="text-align:center; font-size:25px;color:lawngreen" class="fa fa-check"></span>
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <a href="@Url.Action("ReconcileTransaction","Transactions", new { id = transaction.Id })" data-toggle="modal" data-target="#myModalx">Reconcile</a>
+                                                                    }
+
+
+                                                                </td>
+                                                                <td>
+                                                                    <a href="@Url.Action("Edit", "Transactions", new { id = transaction.Id })"><i class="fa fa-pencil-square-o" style="font-size:21px; color:black" aria-hidden="true" title="EDIT"></i></a><span>&nbsp; &nbsp; &nbsp;</span>
+                                                                    <a href="@Url.Action("Void", "Transactions", new { id = transaction.Id })" data-toggle="modal" data-target="#Void"><i class="fa fa-times" style="font-size:21px; color:black" aria-hidden="true" title="Void Transaction"></i></a><span>&nbsp; &nbsp; &nbsp;</span>
+                                                                    <a href="@Url.Action("Details", "Transactions", new { id = transaction.Id })"><i class="fa fa-question-circle-o" style="font-size:21px; color:black" aria-hidden="true" title="DETAILS"></i></a>
+                                                                    <a href="@Url.Action("Delete","Transactions",new { id = transaction.Id })" data-toggle="modal" data-target="#Delete">Delete</a>
+
+
+
+                                                                </td>
+                                                            </tr>
+                                                        }
+
+                                                    }
+
+
+
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="widget-foot">
+
+                                <div class="pull-right">
+                                  
+                                    <a href="@Url.Action("TransactionModal","Transactions", new { id = Model.UserId })" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#myModal">Enter Transactions</a>
+                                    <a href="@Url.Action("Delete","Budgets", new { id = Model.Id })" class="btn btn-default btn-sm" data-toggle="modal" data-target="#Delete">Delete Budget</a>
+                                </div>
+                                <div class="clearfix"></div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+         
+            new Morris.Donut({
+                element: 'SecondChart',
+                data: @Html.Raw(Json.Encode(ViewBag.ArrData2)),
+         
+            })
+
+    </script>
+<script>
+
+            new Morris.Donut({
+                element: 'ThirdChart',
+                data: @Html.Raw(Json.Encode(ViewBag.ArrData3)),
+
+            })
+
+</script>
+    <!-- Loading Third Party Scripts -->
+
+}

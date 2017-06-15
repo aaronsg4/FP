@@ -1,0 +1,88 @@
+﻿@model FP.Models.Household
+
+@{
+    ViewBag.Title = "Create";
+}
+@{ Layout = null;}
+<h3 style="font-variant:small-caps"></h3>
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"style="font-variant:small-caps">&nbsp;&nbsp;  Set up a new household</h4>
+
+
+    </div>
+
+
+
+
+    <div class="modal-body">
+
+        <div class="container">
+            <div class="row">
+
+            </div>
+        </div>
+
+
+
+        <div class="logo">
+            <h1>Financial<span class="color bold">Planner</span></h1>
+            <p class="meta">Your one-stop personal finance-tracking resource</p>
+        </div>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Household</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                What would you like the name of your household to be?
+                <div class="form-group">
+                    
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                How would you describe your household?
+                <div class="form-group">
+                   
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                        @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+
+                @*<div class="form-group">
+                        @Html.LabelFor(model => model.DissolvedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.DissolvedDate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.DissolvedDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</div>
+@*<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>*@

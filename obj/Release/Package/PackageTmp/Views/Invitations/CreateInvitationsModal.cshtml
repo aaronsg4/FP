@@ -1,0 +1,128 @@
+﻿@model FP.Models.Invitations
+@{ Layout = null;}
+@{
+    ViewBag.Title = "CreateInvitationsModal";
+}
+
+<h2></h2>
+
+
+
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Invite Household Members</h4>
+
+
+    </div>
+
+
+
+
+    <div class="modal-body">
+
+        <div class="container">
+            <div class="row">
+
+            </div>
+        </div>
+
+
+
+        <div class="logo">
+            <h1>Financial<span class="color bold">Planner</span></h1>
+            <p class="meta">Your one-stop personal finance-tracking resource</p>
+        </div>
+
+       @using (Html.BeginForm())
+       {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4></h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            
+      
+            @Html.HiddenFor(m => m.SenderUserId)
+            @Html.HiddenFor(m => m.Accepted)
+            @Html.HiddenFor(m => m.Expired)
+            @Html.HiddenFor(m => m.CreatedDate)
+            @Html.HiddenFor(m => m.ExpirationDate)
+            @Html.HiddenFor(m => m.HouseholdId)
+         
+            <div class="form-group">
+                &nbsp;&nbsp; &nbsp; &nbsp; Where do you want to send this invitation to?  Enter the recipient's email below.
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ToEmail, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ToEmail, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                @Html.LabelFor(model => model.SenderUserId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.SenderUserId, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.SenderUserId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Accepted, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Accepted)
+                        @Html.ValidationMessageFor(model => model.Accepted, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Expired, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Expired)
+                        @Html.ValidationMessageFor(model => model.Expired, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ExpirationDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ExpirationDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.HouseholdId, "HouseholdId", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("HouseholdId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.HouseholdId, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Invite!" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+       }
+
+
+    </div>
+    <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</div>
