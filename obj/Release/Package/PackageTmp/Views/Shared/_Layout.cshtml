@@ -43,7 +43,7 @@
     <link href="~/css/jquery-ui.min.css" rel="stylesheet" />
     <!-- Favicon -->
     <link rel="shortcut icon" href="~/img/fp.png" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 </head>
 <body>
     <div class="container body-content">
@@ -93,31 +93,11 @@
                                     }
 
                                     <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pages <b class="caret"></b></a>
-                                        <ul class="dropdown-menu">
-                                            @{ var userId = User.Identity.GetUserId();}
-                                            @if (Request.IsAuthenticated)
-                                            {
-                                                <li><a href="@Url.Action("Details", "Households", new { id = userId })">My Household</a></li>
-                                                <li><a href="@Url.Action("Create", "Transactions")">Record Transactions</a></li>
-
-                                            }
-                                            else
-                                            {
-                                                <li><a href="@Url.Action("Login", "Account")">Login</a></li>
-                                                <li><a href="@Url.Action("Register", "Account")">Register</a></li>
-                                            }
-                                            <li><a href="~/faq.html">FAQ</a></li>
-                                            @*<li><a href="~/features2.html">Features</a></li>
-                                                <li><a href="~/login.html">Login</a></li>
-                                                <li><a href="~/faq.html">FAQ</a></li>
-                                                <li><a href="~/pricing1.html">Pricing Table</a></li>
-                                                <li><a href="~/process.html">Process</a></li>
-                                                <li><a href="~/project.html">Project</a></li>
-                                                <li><a href="~/register.html">Register</a></li>*@
-                                            <li><a href="~/support.html">Support</a></li>
-                                            <li><a href="~/testimonials.html">Testimonials</a></li>
-                                        </ul>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Household<b class="caret"></b></a>
+                                        @{ var userId = User.Identity.GetUserId();}
+                                       
+                                        @{ Html.RenderAction("MyHouseholdDetails", "Households");}
+                                      
                                     </li>
 
 
@@ -126,21 +106,17 @@
                                     @*<li><a href="~/resume.html">Resume</a></li>*@
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Budgeter<b class="caret"></b></a>
-                                        <ul class="dropdown-menu">
-                                            @if (Request.IsAuthenticated)
-                                            {
-                                                <li><a href="@Url.Action("Index","Budgets")">View Budgeter</a></li>
-                                            }
-                                            else
-                                            {
-                                                <li><a href="@Url.Action("Login", "Account")">Login</a></li>
-                                                <li><a href="@Url.Action("Register", "Account")">Register</a></li>
-                                            }
+                                        
+                                            
 
-                                            <li><a href="~/blog3.html">Blog Box</a></li>
+                                            @{ Html.RenderAction("BudgetPartial", "Budgets");}
+                                             
+                                                 
+
+                                            @*<li><a href="~/blog3.html">Blog Box</a></li>
                                             <li><a href="~/blog-3col.html">Blog 3 Column</a></li>
-                                            <li><a href="~/blog-single.html">Blog Single</a></li>
-                                        </ul>
+                                            <li><a href="~/blog-single.html">Blog Single</a></li>*@
+                              
                                     </li>
 
                                     <li class="dropdown">
@@ -156,12 +132,12 @@
                                                 <li><a href="@Url.Action("Register", "Account")">Register</a></li>
                                             }
 
-                                            <li><a href="~/blog3.html">Blog Box</a></li>
+                                            @*<li><a href="~/blog3.html">Blog Box</a></li>
                                             <li><a href="~/blog-3col.html">Blog 3 Column</a></li>
-                                            <li><a href="~/blog-single.html">Blog Single</a></li>
+                                            <li><a href="~/blog-single.html">Blog Single</a></li>*@
                                         </ul>
                                     </li>
-                                    <li><a href="~/contactus1.html">Contact</a></li>
+                                    <li><a href="@Url.Action("Index","Home")">Home</a></li>
                                 </ul>
 
                                 @if (Request.IsAuthenticated)
@@ -290,22 +266,22 @@
                                     <div class="two-col">
                                         <div class="col-left">
                                             <ul>
-                                                <li><a href="#">Condimentum</a></li>
-                                                <li><a href="#">Etiam at</a></li>
-                                                <li><a href="#">Fusce vel</a></li>
-                                                <li><a href="#">Vivamus</a></li>
-                                                <li><a href="#">Pellentesque</a></li>
-                                                <li><a href="#">Vivamus</a></li>
+                                                <li><a href="#">Multiple Budgets</a></li>
+                                                <li><a href="#">Link Bank Accounts</a></li>
+                                                <li><a href="#">Track Expenses</a></li>
+                                                <li><a href="#">Categorize Transactions</a></li>
+                                                <li><a href="#">Visual Graphs</a></li>
+                                                <li><a href="#">Warnings for overages</a></li>
                                             </ul>
                                         </div>
                                         <div class="col-right">
                                             <ul>
-                                                <li><a href="#">Condimentum</a></li>
-                                                <li><a href="#">Etiam at</a></li>
-                                                <li><a href="#">Fusce vel</a></li>
-                                                <li><a href="#">Vivamus</a></li>
-                                                <li><a href="#">Pellentesque</a></li>
-                                                <li><a href="#">Vivamus</a></li>
+                                                <li><a href="#">Plan</a></li>
+                                                <li><a href="#">Track</a></li>
+                                                <li><a href="#">Budget</a></li>
+                                                <li><a href="#">Learn</a></li>
+                                                <li><a href="#">Save</a></li>
+                                                <li><a href="#">Enjoy</a></li>
                                             </ul>
                                         </div>
                                         <div class="clearfix"></div>
@@ -317,7 +293,7 @@
 
                         <hr />
                         <!-- Copyright info -->
-                        <p class="copy">Copyright &copy; 2012 | <a href="#">Your Site</a> - <a href="#">Home</a> | <a href="#">About Us</a> | <a href="#">Service</a> | Designed by <a href="http://responsivewebinc.com/bootstrap-themes">Bootstrap Themes</a></p>
+                        @*<p class="copy">Copyright &copy; 2012 | <a href="#">Your Site</a> - <a href="#">Home</a> | <a href="#">About Us</a> | <a href="#">Service</a> | Designed by <a href="http://responsivewebinc.com/bootstrap-themes">Bootstrap Themes</a></p>*@
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -376,7 +352,11 @@
     <script src="~/js/html5shiv.js"></script>
     <!-- Custom JS -->
     <script src="~/js/custom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
+    @*<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>*@
 
 
 

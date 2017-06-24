@@ -96,10 +96,6 @@ namespace FP.Controllers
 
         //POST
 
-
-
-
-
             public ActionResult NewCategoryConfirm([Bind(Include = "Name")] TransactionCategory transactionCategory)
         {
             if (ModelState.IsValid)
@@ -200,7 +196,6 @@ namespace FP.Controllers
                     
 
                         db.SaveChanges();
-
 
 
                     }

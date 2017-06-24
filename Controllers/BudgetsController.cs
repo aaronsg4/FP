@@ -15,18 +15,17 @@ namespace FP.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Budgets
+
         public ActionResult Index()
         {
             var allUsers = db.Users.ToList();
             var userId = User.Identity.GetUserId();
             var user = db.Users.Find(userId);
-            //var household = db.Households.FirstOrDefault(h => h.UserId == userId);
             var household = db.Users.FirstOrDefault(u => u.Id == userId).Household;
             var accounts = db.Accounts.FirstOrDefault(h => h.AccountHolderUserId == userId);
-            //here we want to find out if user is part of a budget
+      
 
-            List<ApplicationUser> HouseholdMembers = new List<ApplicationUser>();
+       
             List<Budget> MemberBudgets = new List<Budget>();
 
             if (!household.Budgets.Any())
@@ -34,10 +33,133 @@ namespace FP.Controllers
                 var NoBudgets = "Oops, looks like you don't have any budgets yet.  Please go to your household and set up your budget(s)";
                 TempData["budgetmessage"] = NoBudgets;
                 ViewBag.BudgetAlert = "Oops, you haven't established any Budgets yet.  Click here to set up your budget to utilize the planner.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            foreach (var budget in
+                household.Budgets)
+            {
+                MemberBudgets.Add(budget);
+            }
+            return View(MemberBudgets);
+   
+          
+        }
+
+        public ActionResult BudgetPartial()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            if (userId != null)
+            {
+                var householdId = db.Users.FirstOrDefault(u => u.Id == userId).HouseholdId;
+                if (householdId != null)
+                {
+                    Household household = db.Households.Find((object)householdId);
+                    return PartialView("~/Views/Budgets/_BudgetPartial.cshtml", household);
+                }
+
+                else return PartialView("~/Views/Budgets/_BudgetPartial.cshtml");
+
+            }
+            else return PartialView("~/Views/Budgets/_BudgetPartial.cshtml");
+        }
+
+
+        public ActionResult BudgetHousehold(int? id)
+        {
+            BudgetHouseholdViewModel MemberBudget = new BudgetHouseholdViewModel();
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+
+
+            if (userId != null)
+            {
+                var usersbudgets = db.Users.FirstOrDefault(u => u.Id == userId).Budgets;
+                ViewBag.UserBudgets = usersbudgets;
+            }
+
+            if (userId == null)
+            {
+                var NotLoggedIn = "You must be logged in to view your household details.";
+                TempData["message"] = NotLoggedIn;
+                return RedirectToAction("Index", "Home");
+            }
+
+            else if (id == null)
+
+            {
+                var NoHousehold = "You have not set up a household yet.  Please create a household.";
+                TempData["NoHouseholdmessage"] = NoHousehold;
+                return RedirectToAction("Index", "Home");
+
+
+            }
+
+            MemberBudget.household = db.Households.Find(id);
+            if (MemberBudget.household != null)
+            {
+                var users = db.Users.Where(u => u.HouseholdId == MemberBudget.household.Id).ToList();
+                MemberBudget.household.Users = users;
+            }
+
+            else
+            {
+
+                var NotPartofHousehold = "You must be part of a household to view it's details.  If you have been invited to join a household, please join first by clicking 'Join Household', or create a new household.";
+                TempData["message"] = NotPartofHousehold;
+                return RedirectToAction("Index", "Home");
+            }
+
+
+    
+            var household = db.Users.FirstOrDefault(u => u.Id == userId).Household;
+            var accounts = db.Accounts.FirstOrDefault(h => h.AccountHolderUserId == userId);
+            MemberBudget.budgets = db.Budgets.Where(b => b.HouseholdId == household.Id).ToList();
+            MemberBudget.household = household;
+
+            List <ApplicationUser>BudgetUsers = new List<ApplicationUser>();
+            foreach (var member in MemberBudget.household.Users)
+            {
+                BudgetUsers.Add(member);
+            }
+            ViewBag.BudgetCreator = BudgetUsers;
+
+            
+
+            return View(MemberBudget);
+
+
+        }
+
+
+
+
+
+        // GET: Budgets
+        public ActionResult BudgeterIndex()
+        {
+            var allUsers = db.Users.ToList();
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var household = db.Users.FirstOrDefault(u => u.Id == userId).Household;
+            var accounts = db.Accounts.FirstOrDefault(h => h.AccountHolderUserId == userId);
+         
+
+            List<ApplicationUser> HouseholdMembers = new List<ApplicationUser>();
+            List<Budget> MemberBudgets = new List<Budget>();
+
+            if (!household.Budgets.Any())
+            {
+                var NoBudgets = "Oops, looks like you don't have any budgets yet.  Please set up a budget before proceeding.";
+                TempData["budgetmessage"] = NoBudgets;
+                ViewBag.BudgetAlert = "Oops, you haven't established any Budgets yet.  Click here to set up your budget to utilize the planner.";
             }
 
             if (!household.Accounts.Any())
             {
+                var NoAccounts = "Oops, looks like you don't have any accounts yet.  Please set up a bank account before proceeding";
+                TempData["accountmessage"] = NoAccounts;
                 ViewBag.AccountAlert = "Oops, you haven't established any Accounts yet.  Click here to set up your accounts to utilize the planner.";
             }
 
@@ -61,20 +183,11 @@ namespace FP.Controllers
             else
             {
                 
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Details","Households",new { id = household.Id });
             }
         }
      
-        
-        
-
-
-
-
-
-            //var budgets = db.Budgets.Include(b => b.Household);
-
-        
+      
 
         //GET
         public PartialViewResult BudgetsCreateModal()
@@ -114,27 +227,16 @@ namespace FP.Controllers
                     }
                 }
                 var expensetotal = expenses.Sum();
-                //var expenses = budget.Transactions.Where(t => t.SubmitterUserId == userId).Select(c => c.Amount).Sum();
-          
                 db.Budgets.Add(budget);
                 db.SaveChanges();
                 ViewBag.expenses = expenses;
-                return RedirectToAction("Index");
+                return RedirectToAction("BudgetHousehold","Budgets", new { id = household.Id });
     }
 
-    ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", budget.HouseholdId);
+    ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name", budget.HouseholdId);
             return View(budget);
 }
 
-//public PartialViewResult BudgetsCreateModal(string id)
-//{
-
-
-//    ViewBag.ItemizeMessage = "Would you like to itemize this budget or set up as monthly?";
-//    return PartialView();
-//}
-
- 
  public JsonResult CatDropdown(string term)
         {
             var userId = User.Identity.GetUserId();
@@ -143,6 +245,7 @@ namespace FP.Controllers
             var category = db.TransactionCategories.Where(c =>c.CreatedByUserId == userId).Select(c=>c.Name);
             return Json(category, JsonRequestBehavior.AllowGet);
         }
+
 public PartialViewResult BudgetsItemizeModal(string id)
         {
             ViewBag.ItemizeConfirm = "Please enter categories that you would like to track in the budgeter";
@@ -153,42 +256,38 @@ public PartialViewResult BudgetsItemizeModal(string id)
         public ActionResult Details(int? id)
         {
 
-
-
-            List<UserData2> UserChartList = new List<UserData2>();   //Finding Chart Data for Users in a household's spending amounts
-
-
-           var Budget = db.Budgets.Find(id);
-            UserData2 Users;
-            Household household = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             var userId = User.Identity.GetUserId();
+            List<UserData2> UserChartList = new List<UserData2>();   //Finding Chart Data for Users in a household's spending amounts
+            var Budget = db.Budgets.Find(id);
+            UserData2 Users;
+            Household household = db.Users.FirstOrDefault(u => u.Id == userId).Household;
             var userobject = db.Users.Find(userId);
             var userTransactions = db.Transactions.Where(t => t.SubmitterUserId == userId);
+
             foreach (var user in household.Users)
-            
+
             {
                 Users = new UserData2();
                 Users.label = user.FullName;
-                Users.value = user.Transactions.Select(t => t.Amount).ToList().Sum(s => Convert.ToInt32(s));
+                Users.value = user.Transactions.Where(t=>t.BudgetId==Budget.Id).Where(t=>t.Void != true).Select(t => t.Amount).ToList().Sum(s => Convert.ToInt32(s));
                 UserChartList.Add(Users);
             }
 
             ViewBag.ArrData2 = UserChartList.ToArray();
 
             List<UserData2> ExpenseChartList = new List<UserData2>();   //Finding Chart Data for a users spending per category
-            
-
             var Budget2 = db.Budgets.Find(id);
             UserData2 Expenses;
-            Household household2 = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-             var transactioncategorylist = db.TransactionCategories.Where(tc => tc.CreatedByUserId == userId).ToList();
-            foreach (var transactioncategory in transactioncategorylist)
+            Household household2 = db.Users.FirstOrDefault(u => u.Id == userId).Household;
+            var HouseholdUserIds = db.Users.Where(u => u.HouseholdId == household2.Id).Select(s => s.Id);
+            var BudgetCategories = Budget2.Transactions.Select(t => t.TransactionCategory).Where(tc => tc != null);
+          
+            foreach (var transactioncategory in BudgetCategories.Distinct())
             {
                 Expenses = new UserData2();
                 Expenses.label = transactioncategory.Name;
-                var userstransactions = userobject.Transactions.Where(t => t.TransactionCategoryId == transactioncategory.Id).ToList();
-                Expenses.value = userstransactions.Select(u => u.Amount).ToList().Sum(s => Convert.ToInt32(s));
-              
+                var ExpenseList = db.Transactions.ToList().Where(t => t.BudgetId == Budget.Id).Where(t=>t.Void !=true).Where(t => t.TransactionCategory!=null && t.TransactionCategory.Name == transactioncategory.Name).Select(p => p.Amount).Sum(s => Convert.ToInt32(s));
+                Expenses.value = ExpenseList;
                 ExpenseChartList.Add(Expenses);
 
             }
@@ -196,25 +295,28 @@ public PartialViewResult BudgetsItemizeModal(string id)
             ViewBag.ArrData3 = ExpenseChartList.ToArray();
 
             List<UserData2> DaysLeftList = new List<UserData2>();   //Finding Days Left in Budget Period
-
-
             var Budget3 = db.Budgets.Find(id);
             UserData2 Days;
-            Household household3 = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-            var numberofdaysinbudgetperiod = Budget3;
-            //var transactioncategorylist = db.TransactionCategories.Where(tc => tc.CreatedByUserId == userId).ToList();
-            foreach (var transactioncategory in transactioncategorylist)
-            {
-                Expenses = new UserData2();
-                Expenses.label = transactioncategory.Name;
-                var userstransactions = userobject.Transactions.Where(t => t.TransactionCategoryId == transactioncategory.Id).ToList();
-                Expenses.value = userstransactions.Select(u => u.Amount).ToList().Sum(s => Convert.ToInt32(s));
+            string start = Budget3.BudgetStartDate.ToShortDateString();
+            DateTime startdate = DateTime.Parse(start);
+            DateTime expirydate = Budget3.BudgetEnd;
+            string enddate = expirydate.ToShortDateString();
+            DateTime now = DateTime.Now;
+            TimeSpan x = expirydate - now;
+            TimeSpan y = now - startdate;
+             int daysremain = x.Days;
+            int daysintobudget = y.Days;
 
-                ExpenseChartList.Add(Expenses);
+            Days = new UserData2();
+            Days.label = "Days Remaining in Budget";
+            Days.value = daysremain;
+            DaysLeftList.Add(Days);
 
-            }
-
-            ViewBag.ArrData3 = ExpenseChartList.ToArray();
+            Days = new UserData2();
+            Days.label = "Days Into Budget";
+            Days.value = daysintobudget;
+            DaysLeftList.Add(Days);
+            ViewBag.ArrData4 = DaysLeftList.ToArray();
 
 
             if (id == null)
@@ -246,9 +348,8 @@ public PartialViewResult BudgetsItemizeModal(string id)
             }
 
            
-
             ViewBag.UserId = new SelectList(Householdmembers, "Id", "FullName");  //a list of users in the household
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name");
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name");
             return View();
         }
 
@@ -267,35 +368,38 @@ public PartialViewResult BudgetsItemizeModal(string id)
                 return RedirectToAction("Index");
             }
 
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", budget.HouseholdId);
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name", budget.HouseholdId);
             return View(budget);
         }
 
         // GET: Budgets/Edit/5
-        public ActionResult Edit(int? id)
+        public PartialViewResult Edit(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return PartialView();
             }
             Budget budget = db.Budgets.Find(id);
             if (budget == null)
             {
-                return HttpNotFound();
+                return PartialView();
             }
+            ViewBag.BudgetDurationPeriodId = new SelectList(db.BudgetDurationPeriods, "Id", "Description");
             ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", budget.HouseholdId);
-            return View(budget);
+   
+            return PartialView(budget);
         }
 
-        // POST: Budgets/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Amount,Description,SuggestedAmount,BudgetEndDate,BudgetStartDate,HouseholdId")] Budget budget)
+        public ActionResult Edit([Bind(Include = "Id,Name,Amount,Description,BudgetStartDate,HouseholdId,BudgetEnd")] Budget budget)
         {
             if (ModelState.IsValid)
             {
+
+                
                 db.Entry(budget).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -303,7 +407,7 @@ public PartialViewResult BudgetsItemizeModal(string id)
             ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", budget.HouseholdId);
             return View(budget);
         }
-
+    
         // GET: Budgets/Delete/5
         public PartialViewResult Delete(int? id)
         {

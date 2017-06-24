@@ -19,42 +19,48 @@ namespace FP.Controllers
         // GET: Households
         public ActionResult Index()
         {
-            return View(db.Households.ToList());
+            return View(db.Users.ToList());
         }
 
         // GET: Households/Details/5
         //[AuthorizeHouseholdRequired]
         public ActionResult Details(int? id)
         {
-            if (id == null)
+            
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
 
+            if (userId != null)
             {
-
+                var usersbudgets = db.Users.FirstOrDefault(u => u.Id == userId).Budgets;
+                ViewBag.UserBudgets = usersbudgets;
+            }
+           
+            if (userId == null)
+            {
                 var NotLoggedIn = "You must be logged in to view your household details.";
                 TempData["message"] = NotLoggedIn;
-             
-                return RedirectToAction("Login", "Account");
-                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index","Home");
             }
 
-            
+             else if (id == null)
 
-            
-            //ApplicationUser user = db.Users.Find(id);
+            {
+                var NoHousehold = "You have not set up a household yet.  Please create a household.";
+                TempData["NoHouseholdmessage"] = NoHousehold;
+                return RedirectToAction("Index","Home");
+          
+            }
+
             Household household = db.Households.Find(id);
             if (household != null)
             {
                 var users = db.Users.Where(u=>u.HouseholdId == household.Id).ToList();
-                //var users = db.Households.Find(user.HouseholdId).Users;
-
                 household.Users = users;
             }
-           
-            //Household household = db.Households.Find(id);
+       
           else
             {
-                ////Then say if the user is not in a household tell them they must create or join a household
-
                 var NotPartofHousehold = "You must be part of a household to view it's details.  If you have been invited to join a household, please join first by clicking 'Join Household', or create a new household.";
                 TempData["message"] = NotPartofHousehold;
                 return RedirectToAction("Index","Home");
@@ -71,7 +77,7 @@ namespace FP.Controllers
                 var householdId = db.Users.FirstOrDefault(u => u.Id == userId).HouseholdId;
                 if (householdId != null)
                 {
-                    Household household = db.Households.Find(householdId);
+                    Household household = db.Households.Find((object)householdId);
                     return PartialView("~/Views/Households/_MyHouseholdDetails.cshtml", household);
                 }
 
@@ -92,7 +98,7 @@ namespace FP.Controllers
                     var householdId = db.Users.FirstOrDefault(u => u.Id == userId).HouseholdId;
                     if (householdId != null)
                     {
-                        Household household = db.Households.Find(householdId);
+                        Household household = db.Households.Find((object)householdId);
                         return PartialView("~/Views/Households/_MyHouseholdDetailsb.cshtml", household);
                     }
                 }
@@ -106,9 +112,29 @@ namespace FP.Controllers
 
 
         // GET: Households/Create
-        public ActionResult Create()
+        public PartialViewResult Create()
         {
-            return View();
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            if (userId !=null)
+            {
+                if (user.HouseholdId != null)
+           
+                {
+                    var AlreadyinHousehold = "You are already part of a household.  You can only be in one Financial Planner household at a time.";
+                    TempData["AlreadyinHouseholdmessage"] = AlreadyinHousehold;
+                    return PartialView("Reroute");
+                }
+            }
+           
+            else
+            {
+                var NotLoggedIn = "You are not logged in.  Please log in to create a household.";
+                TempData["NotLoggedInmessage"] = NotLoggedIn;
+                return PartialView("Reroute");
+                
+            }
+            return PartialView();
         }
 
         // POST: Households/Create
@@ -125,16 +151,34 @@ namespace FP.Controllers
 
                 if (userId != null)
                 {
-                    household.CreatedDate = DateTime.Now;
-                    household.UserId = userId;
-                    db.Households.Add(household);
-                    db.SaveChanges();
-                    //Can add some kind of tempdata message here about what to do next
-                    return RedirectToAction("Details","Household", new { id = household.Id });
+
+                    if (user.HouseholdId == null)
+                    {
+                        household.CreatedDate = DateTime.Now;
+                        household.UserId = userId;
+                        db.Households.Add(household);
+                        db.SaveChanges();
+                        user.HouseholdId = household.Id;
+                        var UsersFinancialAccounts = db.Users.Find(userId).Accounts;
+                        foreach (var account in UsersFinancialAccounts)
+                        {
+                            account.HouseholdId = household.Id;
+                         }
+                        db.SaveChanges();
+                        return RedirectToAction("BudgetHousehold", "Budgets", new { id = household.Id });
+                    }
+                   else
+                    {
+                        var AlreadyinHousehold = "You are already part of a household.  You can only be in one Financial Planner household at a time.";
+                        TempData["message"] = AlreadyinHousehold;
+                        return RedirectToAction("Index", "Home");
+                    }
+                 
+                    
                 }
                 else
                 {
-                    //you arent logged in, please log in to create a household
+         
                     var NotLoggedIn = "You are not logged in.  Please log in to create a household.";
                     TempData["message"] = NotLoggedIn;
                     return RedirectToAction("Index", "Home");
@@ -150,8 +194,17 @@ namespace FP.Controllers
 
             public PartialViewResult JoinHouseholdPopUp()
         {
-            return PartialView();
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            if (userId != null)
+            {
+                return PartialView();
+            }
+            var NotLoggedIn2 = "You are not logged in.  Please log in before joining a household.";
+            TempData["NotLoggedIn2message"] = NotLoggedIn2;
+            return PartialView("Reroute");
         }
+
 
 
 
@@ -166,12 +219,18 @@ namespace FP.Controllers
             var userinHousehold = db.Users.Find(User.Identity.GetUserId());
             await ControllerContext.HttpContext.RefreshAuthentication(userinHousehold);
             Household household = db.Households.Find(id);
-            //Invitations invitation = db.Invitations.Find(household)
             var userId = User.Identity.GetUserId();
             var user = db.Users.Find(userId);
-           
+
+            var UsersFinancialAccounts = db.Users.Find(userId).Accounts;
+            if (UsersFinancialAccounts != null)
+            {
+                foreach (var account in UsersFinancialAccounts)
+                {
+                    account.HouseholdId = household.Id;
+                }
+            }
             
-            //if (household.)
 
             if (household == null)
             {
@@ -221,29 +280,21 @@ namespace FP.Controllers
             if (ModelState.IsValid)
 
             {
-                var newhousehold = db.Households.AsNoTracking().FirstOrDefault(h => h.Id == household.Id);
+                    var newhousehold = db.Households.AsNoTracking().FirstOrDefault(h => h.Id == household.Id);
                     var userId = User.Identity.GetUserId();
                     var user = db.Users.Find(userId);
                     household.Users = newhousehold.Users;
-                user.HouseholdId = household.Id;
+                    user.HouseholdId = household.Id;
+                    household.Users.Add((ApplicationUser)user);
                 
-                    household.Users.Add(user);
-                
-                db.SaveChanges();
-                    return RedirectToAction("Details", "Households",new { id = household.UserId });
+                    db.SaveChanges();
+                    return RedirectToAction("BudgetHousehold", "Budgets",new { id = household.Id });
                 }
 
             return RedirectToAction("Index");
         }
 
-        // public void AddUserToAProject(string userId, int projectId)
-        //         {
-        //ApplicationUser user = db.Users.Find(userId);
-        //Project project = db.Projects.Find(projectId);
-        // project.Users.Add(user);
-        // db.SaveChanges();
-
-
+   
         //Leave Household GET
         public ActionResult LeaveHousehold(int? Id)
         {
@@ -268,9 +319,15 @@ namespace FP.Controllers
 
             var userId = User.Identity.GetUserId();
             var user = db.Users.Find(userId);
+            var UsersFinancialAccounts = user.Accounts;
+            foreach (var account in UsersFinancialAccounts)
+            {
+                account.HouseholdId = null;
+            }
 
+            user.HouseholdId = null;
             Household household = db.Households.Find(Id);
-            household.Users.Remove(user);
+            household.Users.Remove((ApplicationUser)user);
 
 
             db.SaveChanges();
@@ -301,13 +358,17 @@ namespace FP.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description,CreatedDate,DissolvedDate")] Household household)
+        public ActionResult Edit([Bind(Include = "Id,Name,Description")] Household household)
         {
             if (ModelState.IsValid)
             {
+                
+                var hcd = db.Households.AsNoTracking().FirstOrDefault(h => h.Id == household.Id).CreatedDate;
+                household.CreatedDate = hcd;
+              
                 db.Entry(household).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("BudgetHousehold","Budgets",new { id = household.Id });
             }
             return View(household);
         }
@@ -332,10 +393,20 @@ namespace FP.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+
             Household household = db.Households.Find(id);
+            var householdUsers = household.Users.ToList();
+            foreach (var huser in householdUsers)
+            {
+                huser.HouseholdId = null;
+            }
+
             db.Households.Remove(household);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Home", "Index");
         }
 
         protected override void Dispose(bool disposing)

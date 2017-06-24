@@ -1,0 +1,64 @@
+﻿@model FP.Models.Household
+@{
+    ViewBag.Title = "_MyHouseholdDetails";
+}
+@if (Model != null)
+{
+    <ul class="dropdown-menu">
+
+        @if (Request.IsAuthenticated)
+        {
+            <li><a href="@Url.Action("BudgetHousehold", "Budgets", new { id = Model.Id })">My Household</a></li>
+            @*<li><a href="@Url.Action("Create", "Transactions")">Record Transactions</a></li>*@
+
+        }
+        else
+        {
+            <li><a href="@Url.Action("Login", "Account")">Login</a></li>
+            <li><a href="@Url.Action("Register", "Account")">Register</a></li>
+        }
+        @*<li><a href="~/faq.html">FAQ</a></li>*@
+        @*<li><a href="~/features2.html">Features</a></li>
+            <li><a href="~/login.html">Login</a></li>
+            <li><a href="~/faq.html">FAQ</a></li>
+            <li><a href="~/pricing1.html">Pricing Table</a></li>
+            <li><a href="~/process.html">Process</a></li>
+            <li><a href="~/project.html">Project</a></li>
+            <li><a href="~/register.html">Register</a></li>*@
+        @*<li><a href="~/support.html">Support</a></li>
+        <li><a href="~/testimonials.html">Testimonials</a></li>*@
+    </ul>
+}
+
+else
+{
+    <ul class="dropdown-menu">
+
+        @if (Request.IsAuthenticated)
+        {
+            <li><a href="@Url.Action("Details", "Households")">My Household</a></li>
+            @*<li><a href="@Url.Action("Create", "Transactions")">Record Transactions</a></li>*@
+
+        }
+        else
+        {
+            <li><a href="@Url.Action("Login", "Account")">Login</a></li>
+            <li><a href="@Url.Action("Register", "Account")">Register</a></li>
+        }
+        @*<li><a href="~/faq.html">FAQ</a></li>*@
+        @*<li><a href="~/features2.html">Features</a></li>
+            <li><a href="~/login.html">Login</a></li>
+            <li><a href="~/faq.html">FAQ</a></li>
+            <li><a href="~/pricing1.html">Pricing Table</a></li>
+            <li><a href="~/process.html">Process</a></li>
+            <li><a href="~/project.html">Project</a></li>
+            <li><a href="~/register.html">Register</a></li>*@
+        @*<li><a href="~/support.html">Support</a></li>
+        <li><a href="~/testimonials.html">Testimonials</a></li>*@
+    </ul>
+}
+
+
+
+
+

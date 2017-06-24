@@ -41,14 +41,14 @@ namespace FP.Controllers
         // GET: Invitations/Create
         public ActionResult Create()
         {
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name");
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name");
             return View();
         }
 
         public PartialViewResult CreateInvitationsModal()
         {
 
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name");
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name");
 
             return PartialView();
         }
@@ -69,7 +69,8 @@ namespace FP.Controllers
                 invitations.SenderUserId = userId;
                 invitations.CreatedDate = DateTime.Now;
                 invitations.ExpirationDate = DateTime.Now.AddDays(30);
-                invitations.HouseholdId = db.Households.FirstOrDefault(h => h.UserId == userId).Id;
+                var householdId = db.Users.FirstOrDefault(u => u.Id == userId).HouseholdId;
+                invitations.HouseholdId = householdId.GetValueOrDefault();
                 invitations.SenderUserId = userId;
                 Household household = db.Households.Find(invitations.HouseholdId);
                 household.InvitedEmail = invitations.ToEmail;
@@ -85,7 +86,7 @@ namespace FP.Controllers
                 {
                     var message = new IdentityMessage
                     {
-                        Body = "You have been invited to join the online Financial Planner by " + db.Users.FirstOrDefault(u => u.Id == invitations.SenderUserId).FirstName + ".  Click <a href='http://agay-budgeter.azurewebsites.net/'>here</a> to visit the Financial Planner and proceed.",
+                        Body = "You have been invited to join the online Financial Planner by " + db.Users.FirstOrDefault(u => u.Id == invitations.SenderUserId).FirstName + ".  Click http://agay-budgeter.azurewebsites.net/ to visit the Financial Planner and proceed.",
 
 
                         Subject = "You've been invited to the Financial Planner",
@@ -94,10 +95,10 @@ namespace FP.Controllers
                     EmailService email = new EmailService();
                     await email.SendAsync(message);
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("BudgetHousehold","Budgets",new { id = household.Id });
             }
 
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitations.HouseholdId);
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name", invitations.HouseholdId);
             return View(invitations);
         }
 
@@ -113,7 +114,7 @@ namespace FP.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitations.HouseholdId);
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name", invitations.HouseholdId);
             return View(invitations);
         }
 
@@ -130,7 +131,7 @@ namespace FP.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitations.HouseholdId);
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name", invitations.HouseholdId);
             return View(invitations);
         }
 

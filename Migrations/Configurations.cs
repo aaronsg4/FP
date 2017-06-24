@@ -50,7 +50,7 @@
 
 
 
-            if (!context.Households.Any())
+            if (!context.Users.Any())
             {
                 context.Households.AddOrUpdate(x => x.Id, new Household()
                 {
@@ -113,7 +113,7 @@
                     FirstName = "Don",
                     LastName = "Delight",
                     DisplayName = "Don Delight",
-                    //HouseholdId = context.Households.FirstOrDefault(h => h.Name == "Joy's Household").Id
+                    HouseholdId = context.Households.FirstOrDefault(h => h.Name == "Joy's Household").Id
 
                 }, "somethingelse");
             }
@@ -311,7 +311,35 @@
 
                 }, "somethingelse");
             }
+            if (!context.Users.Any(u => u.Email == "GuestUser@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
 
+                    Email = "GuestUser@mailinator.com",
+                    FirstName = "Guest",
+                    LastName = "User",
+                    UserName = "GuestUser@mailinator.com",
+                    DisplayName = "Guest User",
+                    //HouseholdId = context.Households.FirstOrDefault(h => h.Name == "Joy's Household").Id
+
+                }, "Login1111!");
+            }
+
+            if (!context.Users.Any(u => u.Email == "aaronsg44@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+
+                    Email = "aarongs44@mailinator.com",
+                    FirstName = "Aaron",
+                    LastName = "Gay",
+                    UserName = "aaronsg44@mailinator.com",
+                    DisplayName = "Aaron Gay",
+                    //HouseholdId = context.Households.FirstOrDefault(h => h.Name == "Joy's Household").Id
+
+                }, "somethingelse");
+            }
 
 
             if (!context.AccountTypes.Any())

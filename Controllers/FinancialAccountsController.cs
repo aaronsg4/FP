@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using FP.Models;
 using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
 
 namespace FP.Controllers
 {
@@ -30,6 +31,7 @@ namespace FP.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             FinancialAccount financialAccount = db.Accounts.Find(id);
+            financialAccount.Transactions = db.Transactions.Where(t => t.FinancialAccountId == financialAccount.Id).Where(t => t.Void != true).ToList();
             if (financialAccount == null)
             {
                 return HttpNotFound();
@@ -38,21 +40,19 @@ namespace FP.Controllers
         }
 
         // GET: FinancialAccounts/Create
-        public ActionResult Create()
+        public PartialViewResult Create()
         {
             var userId = User.Identity.GetUserId();
             var user = db.Users.Find(userId);
             var householdId = user.HouseholdId;
-            var householdIdb = db.Households.Where(h => h.Id == user.HouseholdId);
+            var householdIdb = db.Households.Where((System.Linq.Expressions.Expression<Func<Household, bool>>)(h => h.Id == user.HouseholdId));
             var users = db.Users.Where(u => u.HouseholdId == householdId);
             var usersb = users.Where(u => u.Id == userId);
 
             ViewBag.AccountHolderUserId = new SelectList(usersb, "Id", "FullName");
             ViewBag.AccountTypeId = new SelectList(db.AccountTypes, "Id", "Name");
             ViewBag.HouseholdId = new SelectList(householdIdb, "Id", "Name");
-            //ViewBag.Household = db.Households.Find(householdId).Name;
-            //ViewBag.HouseholdId = householdId;
-            return View();
+            return PartialView();
         }
 
         // POST: FinancialAccounts/Create
@@ -67,20 +67,20 @@ namespace FP.Controllers
                 var userId = User.Identity.GetUserId();
                 var householdId = db.Users.FirstOrDefault(u => u.Id == userId).HouseholdId;
                 financialAccount.HouseholdId = householdId.Value;
-                //financialAccount.HouseholdId = db.Households.Find(userId).Id;
                 financialAccount.AccountHolderUserId = userId;
                 financialAccount.ReconciledBalance = financialAccount.ActualBalance;
                 financialAccount.AccountHolderUserId = userId;
                 financialAccount.CreatedDate = DateTime.Now;
 
-                //financialAccount.User.Id = financialAccount.AccountHolderUserId;
+             
                 db.Accounts.Add(financialAccount);
                 db.SaveChanges();
-                return RedirectToAction("Details","Households", new { id = userId });
+           
+                return RedirectToAction("BudgetHousehold","Budgets", new { id = householdId });
             }
 
             ViewBag.AccountTypeId = new SelectList(db.AccountTypes, "Id", "Name", financialAccount.AccountTypeId);
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", financialAccount.HouseholdId);
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name", financialAccount.HouseholdId);
             return View(financialAccount);
         }
 
@@ -97,7 +97,7 @@ namespace FP.Controllers
                 return HttpNotFound();
             }
             ViewBag.AccountTypeId = new SelectList(db.AccountTypes, "Id", "Name", financialAccount.AccountTypeId);
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", financialAccount.HouseholdId);
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name", financialAccount.HouseholdId);
             return View(financialAccount);
         }
 
@@ -115,23 +115,33 @@ namespace FP.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.AccountTypeId = new SelectList(db.AccountTypes, "Id", "Name", financialAccount.AccountTypeId);
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", financialAccount.HouseholdId);
+            ViewBag.HouseholdId = new SelectList(db.Users, "Id", "Name", financialAccount.HouseholdId);
             return View(financialAccount);
         }
 
         // GET: FinancialAccounts/Delete/5
-        public ActionResult Delete(int? id)
+        public PartialViewResult Delete(int? id)
         {
+            var userId = User.Identity.GetUserId();
+            var householdId = db.Users.Find(userId).HouseholdId;
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return PartialView("Reroute");
             }
             FinancialAccount financialAccount = db.Accounts.Find(id);
             if (financialAccount == null)
             {
-                return HttpNotFound();
+                return PartialView("Reroute");
             }
-            return View(financialAccount);
+            if (financialAccount.AccountHolderUserId == userId)
+            {
+                return PartialView(financialAccount);
+            }
+      
+            var NotYourAccount = "Sorry.  You can only delete your own accounts.";
+            TempData["NotYourAccountmessage"] = NotYourAccount;
+            return PartialView("Reroute");
+
         }
 
         // POST: FinancialAccounts/Delete/5
@@ -139,10 +149,12 @@ namespace FP.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            var userId = User.Identity.GetUserId();
+            var householdId = db.Users.FirstOrDefault(u => u.Id == userId).HouseholdId;
             FinancialAccount financialAccount = db.Accounts.Find(id);
             db.Accounts.Remove(financialAccount);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details","Households", new { id = householdId });
         }
 
         protected override void Dispose(bool disposing)

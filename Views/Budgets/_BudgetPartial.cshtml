@@ -1,0 +1,42 @@
+﻿
+@model FP.Models.Household
+@{
+    ViewBag.Title = "BudgetPartial";
+}
+@if (Model != null)
+{
+    <ul class="dropdown-menu">
+
+        @if (Request.IsAuthenticated)
+        {
+            <li><a href="@Url.Action("BudgetHousehold", "Budgets", new { id = Model.Id })">My Budgets</a></li>
+          
+
+        }
+        else
+        {
+            <li><a href="@Url.Action("Login", "Account")">Login</a></li>
+            <li><a href="@Url.Action("Register", "Account")">Register</a></li>
+        }
+     
+    </ul>
+}
+
+else
+{
+    <ul class="dropdown-menu">
+
+        @if (Request.IsAuthenticated)
+        {
+            <li><a href="@Url.Action("BudgetHousehold", "Budgets", new { id = Model.Id })">My Budgets</a></li>
+        }
+        else
+        {
+            <li><a href="@Url.Action("Login", "Account")">Login</a></li>
+            <li><a href="@Url.Action("Register", "Account")">Register</a></li>
+        }
+      
+    </ul>
+}
+
+

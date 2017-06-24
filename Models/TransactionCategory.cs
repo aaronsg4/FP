@@ -17,12 +17,10 @@ namespace FP.Models
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
-
         public string CreatedByUserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
 
-        //A Transaction Category can have many transactions
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

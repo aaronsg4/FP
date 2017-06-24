@@ -43,15 +43,12 @@ namespace FP.Controllers
         public PartialViewResult TransactionModal(string id)
         {
 
-            var user = db.Users.Find(id);
-            var userId = user.Id;
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
             var household = user.Household;
             var accounts = db.Accounts.Where(a => a.AccountHolderUserId == userId);
-
-
             var userscategories = db.TransactionCategories.Where(t => t.CreatedByUserId == userId).ToList(); 
-            
-            var userhouseholdId = user.HouseholdId;
+             var userhouseholdId = user.HouseholdId;
             var usersinhousehold = db.Users.Where(u => u.HouseholdId == userhouseholdId);
             var UserHousehold = user.Household.Name;
             var General = db.TransactionCategories.Where(t => t.Name == "General");
@@ -66,14 +63,16 @@ namespace FP.Controllers
 
             if (!accounts.Any())
             {
+                UrlHelper uh = new UrlHelper(this.ControllerContext.RequestContext);
+                string url = uh.Action("Create", "FinancialAccounts", null);
+                ViewBag.url = url;
                 ViewBag.AccountAlert = "Oops, you haven't established any Accounts yet.  Click here to set up your accounts to utilize the planner.";
+                
             }
-
-
-
-                 ViewBag.BudgetId = new SelectList(household.Budgets, "Id", "Name");
-                 ViewBag.FinancialAccountId = new SelectList(accounts, "Id", "Name");
-                 ViewBag.TransactionTypeId = new SelectList(db.TransactionTypes, "Id", "Name");
+            
+            ViewBag.BudgetId = new SelectList(household.Budgets, "Id", "Name");
+            ViewBag.FinancialAccountId = new SelectList(accounts, "Id", "Name");
+            ViewBag.TransactionTypeId = new SelectList(db.TransactionTypes, "Id", "Name");
 
 
                 return PartialView();
@@ -190,80 +189,82 @@ namespace FP.Controllers
                 
                 var userId = User.Identity.GetUserId();
                 var user = db.Users.Find(userId);
-                transaction.Reconciled = false;
-                transaction.SubmitterUserId = userId;
-                transaction.CreatedDate = DateTime.Now;
-                Budget budget = db.Budgets.Find(transaction.BudgetId);
-                FinancialAccount financialaccount = db.Accounts.Find(transaction.FinancialAccountId);
-               
-                var TransactionCategory = db.TransactionCategories.FirstOrDefault(tc => tc.Name == TransactionCategoryName);
-               if (TransactionCategory != null)
+                var useraccounts = db.Accounts.Where(a => a.AccountHolderUserId == userId).ToList();
+                if (useraccounts !=null)
                 {
-                    transaction.TransactionCategoryId = TransactionCategory.Id;
-                }
-               else
-                {
-                    TransactionCategory transactionCategory = new TransactionCategory();
-                    transactionCategory.Name = TransactionCategoryName;
-                    transactionCategory.CreatedByUserId = userId;
-                    transactionCategory.CreatedDate = DateTime.Now;
-                    db.TransactionCategories.Add(transactionCategory);
+                    transaction.Reconciled = false;
+                    transaction.SubmitterUserId = userId;
+                    transaction.CreatedDate = DateTime.Now;
+                    Budget budget = db.Budgets.Find(transaction.BudgetId);
+                    FinancialAccount financialaccount = db.Accounts.Find(transaction.FinancialAccountId);
 
-                    db.SaveChanges();
-                    transaction.TransactionCategoryId = transactionCategory.Id;
-                }
-
-               
-
-                var creditId = db.TransactionTypes.FirstOrDefault(t => t.Name == "Credit").Id;
-                var debitId = db.TransactionTypes.FirstOrDefault(t => t.Name == "Debit").Id;
-                if(transaction.TransactionTypeId == debitId)
-                {
-                    transaction.Amount = transaction.Amount * -1;
-                }
-              
-
-                budget.BudgetRemaining = budget.BudgetRemaining + transaction.Amount;
-                financialaccount.ActualBalance = financialaccount.ActualBalance + transaction.Amount;
-                db.Transactions.Add(transaction);
-                db.SaveChanges();
-
-                List<decimal> expenses = new List<decimal>();
-                foreach (var expense in budget.Transactions)
-                {
-                    if (expense.CreatedDate <= budget.BudgetEnd && expense.SubmitterUserId == userId)
+                    var TransactionCategory = db.TransactionCategories.FirstOrDefault(tc => tc.Name == TransactionCategoryName);
+                    if (TransactionCategory != null)
                     {
-                        expenses.Add(expense.Amount);
+                        transaction.TransactionCategoryId = TransactionCategory.Id;
                     }
+                    else
+                    {
+                        TransactionCategory transactionCategory = new TransactionCategory();
+                        transactionCategory.Name = TransactionCategoryName;
+                        transactionCategory.CreatedByUserId = userId;
+                        transactionCategory.CreatedDate = DateTime.Now;
+                        db.TransactionCategories.Add(transactionCategory);
+
+                        db.SaveChanges();
+                        transaction.TransactionCategoryId = transactionCategory.Id;
+                    }
+
+                    var creditId = db.TransactionTypes.FirstOrDefault(t => t.Name == "Credit").Id;
+                    var debitId = db.TransactionTypes.FirstOrDefault(t => t.Name == "Debit").Id;
+                    if (transaction.TransactionTypeId == debitId)
+                    {
+                        transaction.Amount = transaction.Amount * -1;
+                    }
+
+
+                    budget.BudgetRemaining = budget.BudgetRemaining + transaction.Amount;
+                    financialaccount.ActualBalance = financialaccount.ActualBalance + transaction.Amount;
+                    db.Transactions.Add(transaction);
+                    db.SaveChanges();
+
+                    List<decimal> expenses = new List<decimal>();
+                    foreach (var expense in budget.Transactions)
+                    {
+                        if (expense.CreatedDate <= budget.BudgetEnd && expense.SubmitterUserId == userId)
+                        {
+                            expenses.Add(expense.Amount);
+                        }
+                    }
+                    var expensetotal = expenses.Sum();
+                    ViewBag.Expenses = expensetotal;
+                    return RedirectToAction("Details", "Budgets", new { id = transaction.BudgetId });
                 }
-                var expensetotal = expenses.Sum();
-
-
-
-                ViewBag.Expenses = expensetotal;
-                return RedirectToAction("Details","Budgets", new { id = transaction.BudgetId });
+                else ViewBag.NoAccounts = "You have not set up any accounts.  Please set up a bank account before entering transactions.";
             }
-
+               
+            
             ViewBag.TransactionCategoryId = new SelectList(db.TransactionCategories, "Id", "Name", transaction.TransactionCategoryId);
             ViewBag.TransactionTypeId = new SelectList(db.TransactionTypes, "Id", "Name", transaction.TransactionTypeId);
             return View(transaction);
         }
 
         // GET: Transactions/Edit/5
-        public ActionResult Edit(int? id)
+        public PartialViewResult Edit(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return PartialView();
             }
             Transaction transaction = db.Transactions.Find(id);
             if (transaction == null)
             {
-                return HttpNotFound();
+                return PartialView();
             }
+
+
             ViewBag.TransactionCategoryId = new SelectList(db.TransactionCategories, "Id", "Name", transaction.TransactionCategoryId);
-            ViewBag.TransactionTypeId = new SelectList(db.TransactionTypes, "Id", "Name", transaction.TransactionTypeId);
-            return View(transaction);
+            return PartialView(transaction);
         }
 
         // POST: Transactions/Edit/5
@@ -271,17 +272,19 @@ namespace FP.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Amount,CreatedDate,UpdatedDate,SubmitterUserId,TransactionTypeId,TransactionCategoryId")] Transaction transaction)
+        public ActionResult Edit([Bind(Include = "Id,Title, TransactionCategoryId")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
-                //transaction.
-                db.Entry(transaction).State = EntityState.Modified;
+
+                var userId = User.Identity.GetUserId();
+                var user = db.Users.Find(userId);
+                var household = user.Household;
+                var budget = db.Transactions.FirstOrDefault(t => t.Id == transaction.Id).Budget;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details","Budgets", new { id = budget.Id });
             }
             ViewBag.TransactionCategoryId = new SelectList(db.TransactionCategories, "Id", "Name", transaction.TransactionCategoryId);
-            ViewBag.TransactionTypeId = new SelectList(db.TransactionTypes, "Id", "Name", transaction.TransactionTypeId);
             return View(transaction);
         }
 

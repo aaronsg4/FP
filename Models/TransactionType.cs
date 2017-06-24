@@ -16,7 +16,6 @@ namespace FP.Models
         public string Name { get; set; }
 
 
-        //One Transaction type can belong to many Transactions
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

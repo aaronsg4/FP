@@ -18,7 +18,7 @@ namespace FP.Models
         public string Description { get; set; }
 
 
-        //An account type can belong to many accounts
+
 
         public virtual ICollection<FinancialAccount> Accounts { get; set; }
 

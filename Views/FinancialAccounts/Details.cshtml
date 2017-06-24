@@ -4,257 +4,118 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>FinancialAccount</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.AccountType.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AccountType.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Household.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Household.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ActualBalance)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ActualBalance)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ReconciledBalance)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ReconciledBalance)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UpdatedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Include)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Include)
-        </dd>
-
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
-<div class="container-fluid">
-
-    <!-- Page heading -->
-    <div class="page-head">
-
-
-        <h2 class="pull-left">
-            <i class="fa fa-file-o"></i>&nbsp;&nbsp;
-
-
-            @Model.Name
-
-            Statement
-        </h2>
-
-
-
-        <!-- Breadcrumb -->
-        <div class="bread-crumb pull-right">
-            <a href="index.html"><i class="fa fa-home"></i> Home</a>
-            <!-- Divider -->
-            <span class="divider">/</span>
-            <a href="#" class="bread-current">Dashboard</a>
-        </div>
-
-
-
-        <div class="clearfix"></div>
-        <ul>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Categories<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    @*@foreach (var category in Model)
-
-                    {
-                        foreach (var name in category.BudgetItems)
-                        {
-                            <li><a href="@Url.Action("Login","Account")"> @name.Name </a></li>
-                        }
-
-                    }*@
-
-                    <li><a href="~/index1.html"> Register </a></li>
-                    @*<li><a href="~/index-rslider.html">Home #3</a></li>*@
+  
+            <h4>FinancialAccount</h4>
+            <hr />           
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+        <div class="container-fluid">
+            <!-- Page heading -->
+            <div class="page-head">
+                <h2 class="pull-left">
+                    <i class="fa fa-file-o"></i>&nbsp;&nbsp;
+                    @Model.Name
+                    Statement
+                </h2>
+                <!-- Breadcrumb -->
+                <div class="bread-crumb pull-right">
+                    <a href="index.html"><i class="fa fa-home"></i> Home</a>
+                    <!-- Divider -->
+                    <span class="divider">/</span>
+                    <a href="#" class="bread-current">Dashboard</a>
+                </div>
+                <div class="clearfix"></div>
+                <ul>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Categories<b class="caret"></b></a>
+                        <ul class="dropdown-menu">                            
+                            <li><a href="~/index1.html"> Register </a></li>                       
+                        </ul>
+                    </li>
                 </ul>
-            </li>
-
-        </ul>
-    </div>
-    @*< !--Page heading ends -->*@
-    <!-- Matter -->
-
-
-
-    <div class="matter">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-
-                    <div class="widget">
-                        <div class="widget-head">
-                            <div class="pull-left">Statement</div>
-                            <div class="widget-icons pull-right">
-                                <a href="#" class="wminimize"><i class="fa fa-chevron-up"></i></a>
-                                <a href="#" class="wclose"><i class="fa fa-times"></i></a>
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-                        <div class="widget-content">
-                            <div class="padd statement">
-
-                                <div class="row">
-
-                                    @*<div class="col-md-4">
-                                        <div class="well">
-                                            @foreach (var  in Model)
-                                            {
-                                                if (item.Id == Model.First().Id)
-                                                {
-                                                    <h2>@item.Amount </h2>
-                                                }
-                                            }
-
-                                            <p>Starting Balance(23/23/2012)</p>
-                                        </div>
+            </div>
+            @*< !--Page heading ends -->*@
+            <!-- Matter -->
+            <div class="matter">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="widget">
+                                <div class="widget-head">
+                                    <div class="pull-left">Statement</div>
+                                    <div class="widget-icons pull-right">
+                                        <a href="#" class="wminimize"><i class="fa fa-chevron-up"></i></a>
+                                        <a href="#" class="wclose"><i class="fa fa-times"></i></a>
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <div class="well">
-                                            @if (Model.Count() != 0)
-                                            {
-                                                <h2>@Model.First().BudgetRemaining</h2>
-                                            }
-
-                                            <p>Ending Balance(34/23/2032)</p>
-                                        </div>
-                                    </div>*@
-
-                                    <div class="col-md-4">
-                                        <div class="well">
-                                            <h2>@Model.ActualBalance</h2>
-                                            <p>Current Balance</p>
-                                        </div>
-                                    </div>
-
+                                    <div class="clearfix"></div>
                                 </div>
+                                <div class="widget-content">
+                                    <div class="padd statement">
 
-                                <div class="row">
+                                        <div class="row">                                        
 
-                                    <div class="col-md-12">
-                                        <hr />
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-hover table-responsive table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Name</th>
-                                                        <th>Amount</th>
-                                                        <th>Order ID</th>
-                                                        <th>Buyer</th>
-                                                        <th>Date</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    
-                                                        @foreach (var transaction in Model.Transactions)
-                                                        {
+                                            <div class="col-md-4">
+                                                <div class="well">
+                                                    <h2>@Model.ActualBalance</h2>
+                                                    <p>Current Balance</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <hr />
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-hover table-responsive table-bordered">
+                                                        <thead>
                                                             <tr>
-
-                                                                <td>@transaction.Id</td>
-                                                                <td>@transaction.Title</td>
-                                                                <td>@transaction.Amount</td>
-                                                                <td>xxxxx</td>
-                                                                <td>xxxxx</td>
-                                                                <td>@transaction.CreatedDate</td>
+                                                                <th>#</th>
+                                                                <th>Name</th>
+                                                                <th>Amount</th>                                                        
+                                                                <th>Date</th>
                                                             </tr>
-                                                        }
-                                                            
-                                                
-                                                </tbody>
-                                            </table>
+                                                        </thead>
+                                                        <tbody>
+
+                                                            @foreach (var transaction in Model.Transactions)
+                                                            {
+                                                                if (transaction.Void != true)
+                                                                {
+                                                                    <tr>
+
+                                                                        <td>@transaction.Id</td>
+                                                                        <td>@transaction.Title</td>
+                                                                        <td>@transaction.Amount</td>                                                     
+                                                                        <td>@transaction.CreatedDate</td>
+                                                                    </tr>
+                                                                }
+
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
+                                    <div class="widget-foot">
+                                        <div class="pull-right">
+                                            <a href="#" class="btn btn-danger btn-sm">Send Statement</a>
+                                            <a href="#" class="btn btn-default btn-sm">Delete Statement</a>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
                                 </div>
-
-                            </div>
-                            <div class="widget-foot">
-
-                                <div class="pull-right">
-                                    <a href="#" class="btn btn-danger btn-sm">Send Statement</a>
-                                    <a href="#" class="btn btn-default btn-sm">Delete Statement</a>
-                                </div>
-                                <div class="clearfix"></div>
-
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-        </div>
-    </div>
 
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+            @Html.ActionLink("Back to List", "Index")
 
-    <!-- Matter ends -->
+            <!-- Matter ends -->
 
-</div>
+
+            </div>

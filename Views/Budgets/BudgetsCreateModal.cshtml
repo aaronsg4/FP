@@ -17,37 +17,22 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><img src="~/img/fp.png" /></h4>
-
-
             </div>
-
-
-
-
             <div class="modal-body" style="height:600px">
-
                 <div class="container">
                     <div class="row">
-
                         <div class="container">
-
                             <div class="logo">
                                 <h1><a href="~/index.html">Financial<span class="color bold">Planner</span></a></h1>
                                 <p class="meta">Your one-stop personal finance-tracking resource</p><br /><br />
-                            </div>
-
-                            @*<h2>Category</h2>*@
-
+                            </div>                         
                             @using (Html.BeginForm("BudgetsCreate", "Budgets"))
-            {
+                                 {
                                 @Html.AntiForgeryToken()
-
                                 <div class="form-horizontal">
-                                    <h4>Enter a Budget Name</h4>
-                             
+                                    <h4>Enter a Budget Name</h4>                             
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                    <div class="form-group">
-                                        @*@Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="form-group">                     
                                         <div class="col-md-6">
                                             @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                                             @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
@@ -55,8 +40,7 @@
                                     </div>
                                     <h4>How much do you want to spend?</h4>
                               
-                                    <div class="form-group">
-                                        @*@Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="form-group">   
                                         <div class="col-md-6">
                                             @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
                                             @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
@@ -64,8 +48,7 @@
                                     </div>
                                     <h4>What is this budget for?</h4>
                                     
-                                    <div class="form-group">
-                                        @*@Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="form-group">   
                                         <div class="col-md-6">
                                             @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
                                             @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
@@ -73,166 +56,26 @@
                                     </div>
                                     <h4>Duration</h4>
                                     <div class="form-group">
-                                        @*@Html.LabelFor(model => model.BudgetDurationPeriodId, "BudgetDurationPeriodId", htmlAttributes: new { @class = "control-label col-md-2" })*@
-                                        <div class="col-md-10">
+                                      <div class="col-md-10">
                                             @Html.DropDownList("BudgetDurationPeriodId", null, htmlAttributes: new { @class = "form-control" })
                                             @Html.ValidationMessageFor(model => model.BudgetDurationPeriodId, "", new { @class = "text-danger" })
                                         </div>
-                                    </div>
-
-                                  
-
+                                    </div>                                
                                     <div class="form-group">
                                         <div class="col-md-10">
-                                            <input type="submit" value="Create Budget" class="btn btn-default" data-toggle="modal" data-target="#myModal2"/>
+                                            <input type="submit" value="Create Budget" class="btn btn-default"/>
                                         </div>
                                     </div>
                                 </div>
                             }
 
-                            @*<div>
-                                @Html.ActionLink("Back to List", "Index")
-                            </div>*@
+                         
                         </div><br /><br />
-                        <p>@ViewBag.ItemizeMessage</p><br />
 
-
-                        <p></p>
-                        <a href="@Url.Action("BudgetsItemizeModal","Budgets", new { id = userid })" data-toggle="modal" data-target="#myModal2">Itemized Budget</a>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Itemize</button><button type="button" class="btn btn-default" data-dismiss="modal">Monthly</button>
-                    </div>
-                </div>
-
-                <div id="myModal2" class="modal fade" role="dialog">
-                    <div class="modal-dialog">
-
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                @*<button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Modal Header</h4>*@
-                            </div>
-                            <div class="modal-body">
-                                @*@{Html.RenderAction("TransactionModal", "Transactions", new { id = userId });}*@
-                            </div>
-                            <div class="modal-footer">
-                                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                @*@if (ViewBag.AccountAlert == null && ViewBag.BudgetAlert == null)
-                    {*@
-
-
-                @*<h2>TransactionModal</h2>
-
-                        using (Html.BeginForm())
-                        {
-                            @Html.AntiForgeryToken()
-
-
-                            <div class="form-horizontal">
-                                <h4>Transaction</h4>
-                                <hr />
-                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                @Html.HiddenFor(model => model.Id)
-
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.UpdatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.UpdatedDate, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.UpdatedDate, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.SubmitterUserId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.SubmitterUserId, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.SubmitterUserId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.TransactionTypeId, "TransactionTypeId", htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.DropDownList("TransactionTypeId", null, htmlAttributes: new { @class = "form-control" })
-                                        @Html.ValidationMessageFor(model => model.TransactionTypeId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.TransactionCategoryId, "TransactionCategoryId", htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-
-                                        @Html.DropDownList("TransactionCategoryId", null, htmlAttributes: new { @class = "form-control" })
-                                        @Html.ValidationMessageFor(model => model.TransactionCategoryId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.BudgetId, "BudgetId", htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.DropDownList("BudgetId", null, htmlAttributes: new { @class = "form-control" })
-                                        @Html.ValidationMessageFor(model => model.BudgetId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.FinancialAccountId, "AccountId", htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control" })
-                                        @Html.ValidationMessageFor(model => model.FinancialAccountId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-md-offset-2 col-md-10">
-                                        <input type="submit" value="Save" class="btn btn-default" />
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-
-                        <div>
-                            @Html.ActionLink("Back to List", "Index")
-                        </div>
-                    }*@
             </div>
             <div class="modal-footer">
-                <a href="@Url.Action("BudgetsItemizeModal","Budgets", new { id = userid })" data-toggle="modal" data-target="#myModal2">Itemized Budget</a>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Itemize</button><button type="button" class="btn btn-default" data-dismiss="modal">Monthly</button>
+             
             </div>
         </div>
->
+    </div>
+</div>

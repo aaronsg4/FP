@@ -1,11 +1,11 @@
 ﻿@model FP.Models.Transaction
-    @{ Layout = null;}
-@*@using Microsoft.AspNet.Identity
+@{ Layout = null;}
+@using Microsoft.AspNet.Identity
 
 
 @{ var userid = User.Identity.GetUserId();
 
-}*@
+}
 
 
 @{
@@ -15,12 +15,14 @@
 <link href="~/css/bootstrap.min.css" rel="stylesheet">
 <link href="~/css/jquery-ui.min.css" rel="stylesheet" />
 <style>
-    ul.ui-autocomplete {    z-index: 1100;}
+    ul.ui-autocomplete {
+        z-index: 1100;
+    }
 </style>
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
+        <h4 class="modal-title"><img src="~/img/fp.png" /></h4>
 
 
     </div>
@@ -32,10 +34,16 @@
 
         <div class="container">
             <div class="row">
-                <p>@ViewBag.AccountAlert</p><br />
+                <p>
+                    @ViewBag.AccountAlert
+
+
+
+                </p><br />
 
 
                 <p>@ViewBag.BudgetAlert</p>
+
             </div>
         </div>
 
@@ -45,24 +53,24 @@
 
             <h2>TransactionModal</h2>
 
-                        using (Html.BeginForm("CreateBudgetTransaction", "Transactions"))
-                        {
-                            @Html.AntiForgeryToken()
+            using (Html.BeginForm("CreateBudgetTransaction", "Transactions"))
+            {
+                @Html.AntiForgeryToken()
 
 
-                            <div class="form-horizontal">
+                <div class="form-horizontal">
                     <h4>Transaction</h4>
                     <hr />
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     @*@Html.HiddenFor(model => model.Id)*@
-                     @*@Html.HiddenFor(model=>model.SubmitterUserId)
-                                <input data-val="true"
-                                       data-val-number="The field SubmitterUserId must be a string."
-                                       data-val-required="The SubmitterUserd field is required."
-                                       id="SubmitterUserId"
-                                       name="SubmitterUserId"
-                                       type="hidden"
-                                       value="@userid" />*@
+                    @*@Html.HiddenFor(model=>model.SubmitterUserId)
+                        <input data-val="true"
+                               data-val-number="The field SubmitterUserId must be a string."
+                               data-val-required="The SubmitterUserd field is required."
+                               id="SubmitterUserId"
+                               name="SubmitterUserId"
+                               type="hidden"
+                               value="@userid" />*@
 
 
                     <div class="form-group">
@@ -82,31 +90,31 @@
                     </div>
 
                     @*<div class="form-group">
-                        @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                            @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.UpdatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.UpdatedDate, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.UpdatedDate, "", new { @class = "text-danger" })
-                        </div>
-                    </div>*@
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UpdatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.UpdatedDate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.UpdatedDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>*@
 
                     @*<div class="form-group">
-                        @Html.LabelFor(model => model.SubmitterUserId, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.SubmitterUserId, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.SubmitterUserId, "", new { @class = "text-danger" })
-                        </div>
-                    </div>*@
+                            @Html.LabelFor(model => model.SubmitterUserId, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.SubmitterUserId, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SubmitterUserId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>*@
 
-                   <div class="form-group">
-                       &nbsp;&nbsp;&nbsp;Was this a debit or a credit?
+                    <div class="form-group">
+                        &nbsp;&nbsp;&nbsp;Was this a debit or a credit?
                         <div class="col-md-10">
                             @Html.DropDownList("TransactionTypeId", null, htmlAttributes: new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.TransactionTypeId, "", new { @class = "text-danger" })
@@ -115,12 +123,12 @@
 
                     <div class="form-group">
                         &nbsp;&nbsp;&nbsp;Find the type of transaction below or enter a new category
-        <div class="col-md-10">
-            @*@Html.DropDownList("TransactionCategoryId", null, htmlAttributes: new { @class = "form-control" })*@
-            @Html.TextBox("TransactionCategoryName", null, htmlAttributes: new { @class = "form-control"})
-            @Html.ValidationMessageFor(model => model.TransactionCategory, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                        <div class="col-md-10">
+                            @*@Html.DropDownList("TransactionCategoryId", null, htmlAttributes: new { @class = "form-control" })*@
+                            @Html.TextBox("TransactionCategoryName", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TransactionCategory, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
 
 
 
@@ -141,22 +149,22 @@
                         </div>
                     </div>
                     @*<label>
-        Choose a Transaction Category from this list:
-        <input list="TransactionCategoryId" name="TransactionCategoryId" id="TransactionCategoryId" type="text" value="" class="form-control text-box single-line" />
-        <input list="TransactionCategories" name="TransactionCategoryId" id="TransactionCategoryId" />
-    </label>
-    <datalist class="form-control" id="TransactionCategories">
-        @foreach (var category in ViewBag.UserCategories)
-    {
+                            Choose a Transaction Category from this list:
+                            <input list="TransactionCategoryId" name="TransactionCategoryId" id="TransactionCategoryId" type="text" value="" class="form-control text-box single-line" />
+                            <input list="TransactionCategories" name="TransactionCategoryId" id="TransactionCategoryId" />
+                        </label>
+                        <datalist class="form-control" id="TransactionCategories">
+                            @foreach (var category in ViewBag.UserCategories)
+                        {
 
 
-            <option data-value="@category.Id" value="@category.Id ">@category.Name</option>
-        }
-    </datalist>
+                                <option data-value="@category.Id" value="@category.Id ">@category.Name</option>
+                            }
+                        </datalist>
                     *@
                     <div class="form-group">
-                        <div class="col-md-offset-2 col-md-10">
-                      
+                        <div class="col-md-10">
+
                             <input type="submit" value="Save" class="btn btn-default" />
                         </div>
                     </div>
@@ -170,9 +178,15 @@
 
 
             @*<div>
-                @Html.ActionLink("Back to List", "Index")
-            </div>*@
+                    @Html.ActionLink("Back to List", "Index")
+                </div>*@
         }
+        else
+        {
+            <a type="button" class="btn btn-default" style="color:white; width:150px; margin-bottom:7px" href="@Url.Action("Create", "FinancialAccounts")" data-toggle="modal" data-target="#myModalAccountCreate">Add Accounts</a><br />
+            <a type="button" class="btn btn-default" style="color:white; width:150px; margin-bottom:7px" href="@Url.Action("BudgetsCreateModal","Budgets", new { id = userid })" data-toggle="modal" data-target="#myModal1">Create a New Budget</a><br />
+        }
+        
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -182,18 +196,18 @@
 
 
 @*<select class="form-control" id="BudgetId" name="BudgetId">
-    <option value="15">aaron</option>
-</select>
+        <option value="15">aaron</option>
+    </select>
 
-<input list="TransactionCategories" name="TransactionCategoryId" id="TransactionCategoryId">*@
+    <input list="TransactionCategories" name="TransactionCategoryId" id="TransactionCategoryId">*@
 
 <script src="~/js/jquery.js"></script>
 <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-    <script>
-        $(document).ready(function () {
+<script>
+    $(document).ready(function () {
 
-            $('#TransactionCategoryName').autocomplete({
-                source: '@Url.Action("CatDropdown", "Budgets")'
-            });
+        $('#TransactionCategoryName').autocomplete({
+            source: '@Url.Action("CatDropdown", "Budgets")'
         });
+    });
 </script>

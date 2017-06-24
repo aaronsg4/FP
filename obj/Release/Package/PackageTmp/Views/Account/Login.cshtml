@@ -69,7 +69,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <!-- Title and other stuffs -->
-    <title>Login - MacAdmin</title>
+    <title>Financial Planner</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="keywords" content="">
@@ -85,7 +85,8 @@
     <script src="~/js/html5shiv.js"></script>
     <![endif]-->
     <!-- Favicon -->
-    <link rel="shortcut icon" href="~/img/favicon/favicon.png">
+    <link rel="shortcut icon" href="~/img/fp.png" />
+   
 </head>
 
 <body>
@@ -101,6 +102,10 @@
                     <div class="widget worange">
                         <!-- Widget head -->
                         <section id="loginForm">
+
+                            @{ var temporaryloginmessage = TempData["message"];}
+                            @temporaryloginmessage
+
                             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                             {
                                 @Html.AntiForgeryToken()

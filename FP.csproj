@@ -211,6 +211,7 @@
     <Compile Include="Migrations\Configurations.cs" />
     <Compile Include="Models\AuthorizeHouseholdRequired.cs" />
     <Compile Include="Models\BudgetDurationPeriod.cs" />
+    <Compile Include="Models\BudgetHouseholdViewModel.cs" />
     <Compile Include="Models\FinancialAccount.cs" />
     <Compile Include="Models\FinancialAccountType.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -658,7 +659,8 @@
     <Content Include="Views\Budgets\BudgetsCreateModal.cshtml" />
     <Content Include="Views\Budgets\BudgetsItemizeModal.cshtml" />
     <Content Include="Scripts\jquery-1.12.4.min.map" />
-    <None Include="Views\Home\indexa.cshtml" />
+    <Content Include="Views\Budgets\BudgetHousehold.cshtml" />
+    <Content Include="Views\Budgets\_BudgetPartial.cshtml" />
     <Content Include="service1.html" />
     <Content Include="service2.html" />
     <Content Include="service3.html" />
@@ -698,7 +700,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Indexb.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -752,6 +753,7 @@
     <Content Include="Views\TransactionCategories\NewCategory.cshtml" />
     <Content Include="Views\Transactions\Unvoid.cshtml" />
     <Content Include="Views\Transactions\Delete.cshtml" />
+    <Content Include="Views\Households\Reroute.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

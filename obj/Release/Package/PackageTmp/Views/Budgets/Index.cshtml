@@ -7,34 +7,13 @@
 
 }
 
-<h2>Index</h2>
+<h2></h2>
 
-<p>
+<br /><br />
 
-    @if (Request.IsAuthenticated)
-    {
-        <a href="@Url.Action("BudgetsCreateModal","Budgets", new { id = userid })" data-toggle="modal" data-target="#myModal1">Create a New Budget</a>
-    }
-    @*else
-    {
-        <a href="@Url.Action("Login", "Account")">Login</a>
-       <a href="@Url.Action("Register", "Account")">Register</a>
-    }*@
-
-  @*<div data-toggle="modal" data-target="#myModal2"></div>*@
-
-    @Html.ActionLink("Create New", "Create")
-
-</p>
-<p>
-    @Html.ActionLink("Create New Sub-Budget", "Create", "BudgetItems")
-</p>
 <p>
     
-    @if (Model.Count() != 0)
-    {
-        @Model.First().Description
-    }
+    <h4> Budgets</h4>
 
 </p>
 <br /><br /><br />
@@ -150,7 +129,7 @@
 
             @foreach (var budget in Model)
             {
-                <div class="col-md-3 col-sm-6  well">
+                <div class="col-md-3 col-sm-6  well" style="margin:0 10px 0 10px; box-shadow: 10px 10px 5px #888888;">
                     <!-- Staff #1 -->
                     <div class="staff">
                         <!-- Picture -->
@@ -185,6 +164,16 @@
 
         </div>
     </div>
+    <br /><br /><br />
+    <p>
+
+        @if (Request.IsAuthenticated)
+        {
+            <a href="@Url.Action("BudgetsCreateModal","Budgets", new { id = userid })" data-toggle="modal" data-target="#myModal1">Create a New Budget</a>
+        }
+
+
+    </p>
 </div>
 <br /><br /><br /><br /><hr />
 @*<div class="container-fluid"*@
